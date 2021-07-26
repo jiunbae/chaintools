@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import Optional, Union, Callable, Iterable, Any, List
 
-from chaintools.core.type.chainable import Chainable
-from chaintools.core.argument import Argument
+from chaintools.core import Chainable
+from chaintools.core import Argument
 
 
 class Function(metaclass=Chainable):
@@ -41,13 +41,15 @@ class Function(metaclass=Chainable):
     @staticmethod
     def identity(arg, *args) \
             -> Any:
+        """ Identity Function
+        """
         return (arg, ) + args if args else arg
 
     @staticmethod
     def spread():
-        def _wrapper(
-            args: Optional[Argument.ARGS_TYPE] = None, 
-            kwargs: Optional[Argument.KWARGS_TYPE] = None
-        ) -> Argument:
-            return Argument(*(args or []), **(kwargs or {}))
+        """ Spread Function
+        """
+        def _wrapper(*args: Optional[Argument.ARGS_TYPE]) \
+                -> Argument:
+            return Argument(*args)
         return _wrapper

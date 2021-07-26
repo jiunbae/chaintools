@@ -4,7 +4,7 @@ import inspect
 import typing
 
 
-class IsType(type):
+class MetaType(type):
     """ Type checking metaclass
     """
     def __getattr__(cls, key: str) \
@@ -25,7 +25,7 @@ class IsType(type):
             if key_.lower() == "none":
                 return obj is None
 
-            elif base_type is None:
+            if base_type is None:
                 return key_ in map(lambda x: x.__name__, inspect.getmro(type(obj)))
 
             return isinstance(obj, base_type)
@@ -36,6 +36,7 @@ class IsType(type):
             """
             key_ = key[3:]
 
+            # TODO: none assertion is not safe
             if key_.lower() == "none":
                 return None
 
@@ -43,11 +44,11 @@ class IsType(type):
             if isinstance(base_type, type):
                 return base_type(obj)
             return None
-            
+
         if key.startswith('is_'):
             return is_type_check
 
-        elif key.startswith('to_'):
+        if key.startswith('to_'):
             return to_type_check
 
         raise AttributeError(f"{cls.__name__} has no attribute '{key}'")

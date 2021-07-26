@@ -5,7 +5,7 @@ class Chainable(type):
     def __rshift__(cls, function: Callable)\
             -> Chainable:
         instance: Chainable = cls()
-        instance >> function
+        instance = instance >> function
         return instance
 
     def __lshift__(cls, item: Any) \

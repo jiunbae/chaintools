@@ -1,6 +1,6 @@
 import pytest
 
-from chaintools.functional.types import Type as T
+from chaintools import Type as T
 
 
 def test_type_check():

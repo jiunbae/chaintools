@@ -20,6 +20,8 @@ class Argument:
     @staticmethod
     def from_result(result: Any) \
             -> Argument:
+        """ Return an Argument from a function result.
+        """
 
         if not isinstance(result, tuple) or \
             (len(result) > 0 and not isinstance(result[-1], dict)):
@@ -45,18 +47,26 @@ class Argument:
     @property
     def value(self) \
             -> Any:
+        """ Return the value of the argument.
+        """
         if not self.kwargs and self.args:
             return self.args[0]
 
-        elif not self.args and self.kwargs and len(self.kwargs.keys()) == 1:
+        if not self.args and self.kwargs and len(self.kwargs.keys()) == 1:
             return self.kwargs.get(tuple(self.kwargs.keys())[0])
+
+        return None
 
     @property
     def arg(self) \
             -> Argument.RETURN_TYPE:
+        """ Return the argument.
+        """
         return self.args, self.kwargs
 
     def evaluate(self, function: Callable[[Argument.TYPE], Any]) \
             -> Argument:
+        """ Evaluate the argument with a function.
+        """
         result = function(*self.args, **self.kwargs)
         return Argument.from_result(result)

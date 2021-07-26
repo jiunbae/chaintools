@@ -1,5 +1,5 @@
 from .argument import Argument
-from .type.is_type import IsType
+from .type.meta_type import MetaType
 from .type.chainable import Chainable
 
 __all__ = [

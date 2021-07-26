@@ -1,5 +1,7 @@
-from chaintools.core.type.is_type import IsType
+from chaintools.core import MetaType
 
 
-class Type(metaclass=IsType):
+class Type(metaclass=MetaType):
+    """ Type is a base class
+    """
     pass

@@ -6,14 +6,14 @@ from chaintools import Argument
 
 
 def test_function_argument():
-    def function1() -> Tuple[Tuple, Dict[str, Any]]:
+    def return_args_and_kwargs() -> Tuple[Tuple, Dict[str, Any]]:
         return (1, 2), {'c': 1, 'd': 2}
 
-    def function2(a, b, c=0, d=0) -> int:
+    def add_four_variable(a, b, c, d) -> int:
         return a + b + c + d
 
-    f = F >> function1 >> function2
-    return f() == 6
+    f = F >> return_args_and_kwargs >> add_four_variable
+    assert f() == 6
 
 
 def test_function_argument_wrapping():
