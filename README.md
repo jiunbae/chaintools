@@ -5,14 +5,13 @@
 > `chaintools.F` 를 활용해 함수를 연결하는 할 수 있다.
 
 ```python
-def add(a: int, b: int) -> int:
-    return a + b
+def add(tar: int) -> Callable[[int], int]:
+    def _wrapper(src: int) -> int:
+        return src + tar
+    return _wrapper
 
-def sub(a: int, b: int) -> int:
-    return a - b
-
-f = F >> add >> F.duplicate() >> sub
-assert f(1, 2) == 0
+f = F >> add(1) >> add(2)
+assert f(3) == 6
 ```
 
 > 함수의 반환 형태가 `Tuple[Tuple, Dict[str, Any]]` 형태일때 다음 함수의 `*args, **kwargs`에 값을 넣어줄 수 있다.

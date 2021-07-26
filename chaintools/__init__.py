@@ -7,3 +7,5 @@ __all__ = [
     "Type",
     "Argument",
 ]
+
+__version__ = "0.0.1"
