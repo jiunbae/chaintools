@@ -14,7 +14,6 @@ def test_chainable_basic():
             return src + tar
         return _wrapper
 
-
     f = F >> add(1) >> add(2)
     assert f(3) == 6
 
@@ -34,7 +33,6 @@ def test_chainable_chain():
     h = F >> g >> to_float
 
     target = 3
-
     assert str(target) == f(target)
     assert int(target) == g(target)
     assert float(target) == h(target)

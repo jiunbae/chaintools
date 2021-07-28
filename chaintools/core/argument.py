@@ -1,11 +1,11 @@
 from __future__ import annotations
-from typing import Optional, Callable, Tuple, Any, Dict
+from typing import Optional, Callable, Tuple, Union, Any, Dict, List
 
 
 class Argument:
     """ Arguments are evaluated by the function
     """
-    ARGS_TYPE = Tuple[Any, ...]
+    ARGS_TYPE = Union[Tuple[Any, ...], List[Any]]
     KWARGS_TYPE = Dict[str, Any]
     RETURN_TYPE = Tuple[ARGS_TYPE, KWARGS_TYPE]
     TYPE = Tuple[Optional[ARGS_TYPE], Optional[KWARGS_TYPE]]
@@ -18,31 +18,32 @@ class Argument:
         return f'{self.__class__.__name__}({self.args}, {self.kwargs})'
 
     @staticmethod
-    def from_result(result: Any) \
+    def from_result(result: Union[Any, Argument.TYPE]) \
             -> Argument:
         """ Return an Argument from a function result.
+
+        To prevent unintentional generator evaluation, 
+        explicitly convert to argument only when the argument is an Argument.TYPE.
+
+        :param result: The result of a function evaluation.
+        
+        :return: The result as an Argument.
         """
 
-        if not isinstance(result, tuple) or \
-            (len(result) > 0 and not isinstance(result[-1], dict)):
+        if (isinstance(result, list) or isinstance(result, tuple)) and \
+                len(result) == 2 and (result[-1] is None or isinstance(result[-1], dict)):
+            args, kwargs = result
 
-            if isinstance(result, Argument):
-                return result
+            if not kwargs:
+                kwargs = dict()
 
-            result = (result, None)
+        elif not isinstance(result, Argument):
+            args, kwargs = (result, ), dict()
 
-        args, kwargs = result
+        else:
+            return result
 
-        if not isinstance(args, tuple):
-            args = (args, )
-
-        if kwargs is None:
-            kwargs: Dict[str, Any] = dict()
-
-        assert isinstance(args, tuple) and isinstance(kwargs, dict)
-
-        arg = Argument(*args, **kwargs)
-        return arg
+        return Argument(*args, **kwargs)
 
     @property
     def value(self) \
@@ -68,5 +69,6 @@ class Argument:
             -> Argument:
         """ Evaluate the argument with a function.
         """
+
         result = function(*self.args, **self.kwargs)
         return Argument.from_result(result)

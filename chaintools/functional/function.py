@@ -39,17 +39,11 @@ class Function(metaclass=Chainable):
         return result
 
     @staticmethod
-    def identity(arg, *args) \
-            -> Any:
-        """ Identity Function
-        """
-        return (arg, ) + args if args else arg
-
-    @staticmethod
     def spread():
         """ Spread Function
         """
-        def _wrapper(*args: Optional[Argument.ARGS_TYPE]) \
+        def _wrapper(args: Optional[Argument.ARGS_TYPE]) \
                 -> Argument:
             return Argument(*args)
+            
         return _wrapper
