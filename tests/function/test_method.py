@@ -1,5 +1,7 @@
 from typing import Iterable
 
+import pytest
+
 from chaintools import Function as F
 from chaintools import Argument
 

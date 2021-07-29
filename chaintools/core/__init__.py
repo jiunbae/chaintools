@@ -4,6 +4,6 @@ from .type.chainable import Chainable
 
 __all__ = [
     "Argument",
-    "IsType",
+    "MetaType",
     "Chainable",
 ]

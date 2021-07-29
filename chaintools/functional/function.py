@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Optional, Union, Callable, Iterable, Any, List
+from typing import Optional, Union, Callable, Iterable, Any, List, Tuple
+from inspect import signature
 
 from chaintools.core import Chainable
 from chaintools.core import Argument
@@ -37,6 +38,11 @@ class Function(metaclass=Chainable):
             -> Any:
         result = self.__call__(item)
         return result
+
+    @property
+    def signature(self) \
+            -> Tuple[str]:
+        return tuple(map(signature, self.__funcs__))
 
     @staticmethod
     def spread():

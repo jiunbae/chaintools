@@ -3,7 +3,7 @@ import pytest
 from chaintools import Type as T
 
 
-def test_type_check():
+def test_is_type():
     def is_list():
         return (True, False, False) == tuple(map(T.is_list, [[], (), {}]))
 
@@ -26,6 +26,7 @@ def test_type_check():
         is_dict(),
         is_iterable(),
     ])
+
 
 def test_instantiation():
     def to_list():
