@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional, Union, Callable, Iterable, Any, List, Tuple
+from typing import Optional, Union, Callable, Iterable, Generator, Any, List, Tuple
 from inspect import signature
 
 from chaintools.core import Chainable
@@ -38,6 +38,20 @@ class Function(metaclass=Chainable):
             -> Any:
         result = self.__call__(item)
         return result
+
+    def map(self, items: Iterable[Any]) \
+            -> Generator[Any, None, None]:
+        for function in self.__funcs__:
+            items = map(function, items)
+
+        return items
+    
+    def filter(self, items: Iterable[Any]) \
+            -> Generator[Any, None, None]:
+        for function in self.__funcs__:
+            items = filter(function, items)
+
+        return items
 
     @property
     def signature(self) \
