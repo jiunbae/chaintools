@@ -1,37 +1,6 @@
 # chaintools
 
 
-## Function map, filter
-
-> `Function.map`과 `Function.filter`를 사용해서 데이터를 처리할 수 있다.
-```python
-from chaintools import Function as F
-
-def to_float(a):
-    return float(a)
-    
-def to_str(a):
-    return str(a)
-
-f = F >> to_float >> to_str
-result = f.map(range(10))
-assert tuple(result) == tuple(map(to_str, map(to_float, range(10))))
-```
-
-```python
-from chaintools import Function as F
-
-def is_even(a):
-    return a % 2 == 0
-
-def is_not_zero(a):
-    return a != 0
-
-f = F >> is_even >> is_not_zero
-result = f.filter(range(10))
-assert tuple(result) == tuple(filter(is_not_zero, filter(is_even, range(10))))
-```
-
 ## Function chaining
 
 > `Function` 를 활용해 함수를 연결하는 할 수 있다.
@@ -80,4 +49,59 @@ f = F >> return_args >> F.spread() >> add_two_variable
 # g = None -> Tuple[Tuple[Any, ...], Dict[str, Any]] -> [int, ...] -> int
 g = F >> return_args_as_argument >> add_two_variable
 assert f() == g() == 3
+```
+
+## Function map, filter
+
+> `Function.map`과 `Function.filter`를 사용해서 데이터를 처리할 수 있다.
+```python
+def to_float(a):
+    return float(a)
+
+def to_str(a):
+    return str(a)
+
+f = F >> to_float >> to_str
+result = f.map(range(10))
+assert tuple(result) == tuple(map(to_str, map(to_float, range(10))))
+```
+
+```python
+def is_even(a):
+    return a % 2 == 0
+
+def is_not_zero(a):
+    return a != 0
+
+f = F >> is_even >> is_not_zero
+result = f.filter(range(10))
+assert tuple(result) == tuple(filter(is_not_zero, filter(is_even, range(10))))
+```
+
+> `Function.map`와 `Function.filter`또한 chaining 할 수 있습니다. (단, 입력 형태가 Iterable이기 때문에 함수를 연결할 때 주의해야 합니다.)
+```python
+f = F >> F([add(1), to_float]).map >> F(is_even).filter >> F(add(1)).map
+result = f(range(10))
+assert tuple(result) == (3.0, 5.0, 7.0, 9.0, 11.0)
+```
+
+
+## Function annotation
+
+> `str(Function)`을 이용해서 annotation을 확인할 수 있습니다. 만약 이전 함수의 반환 값과 다음 함수의 인자 형태가 맞지 않는다면 `{이전 함수 반환}({다음 함수 인자})`로 표시됩니다.
+
+```python
+def int_to_str(a: int) -> str:
+    return str(a)
+
+def str_to_float(a: str) -> float:
+    return float(a)
+
+def float_to_tuple(a: float) -> Tuple[int, int]:
+    return (int(a), int(a))
+
+f = F >> int_to_str >> str_to_float >> float_to_tuple
+g = F >> int_to_str >> float_to_tuple
+assert str(f) == "Function(int -> str -> float -> tuple[int, int])"
+assert str(g) == "Function(int -> str(float) -> tuple[int, int])"
 ```

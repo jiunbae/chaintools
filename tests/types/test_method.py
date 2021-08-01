@@ -3,11 +3,12 @@ import pytest
 from chaintools import Type as T
 
 
-def test_to():
-    class A:
-        def __init__(self, a: int):
-            self.a = a
+class A:
+    def __init__(self, a: int):
+        self.a = a
 
+
+def test_to():
     f = T.to(A)
     a = f(10)
     assert isinstance(a, A) and a.a == 10
@@ -21,10 +22,6 @@ def test_to_instantiation_equality():
 
 
 def test_is_type():
-    class A:
-        def __init__(self, a: int):
-            self.a = a
-
     f = T.is_type(A)
     a = A(10)
     assert f(a)

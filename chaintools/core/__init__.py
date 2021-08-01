@@ -1,9 +1,13 @@
 from .argument import Argument
-from .type.meta_type import MetaType
-from .type.chainable import Chainable
+from .type import (
+    Chainable,
+    MetaType,
+    Annotation,
+)
 
 __all__ = [
     "Argument",
     "MetaType",
     "Chainable",
+    "Annotation",
 ]
