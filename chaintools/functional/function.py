@@ -27,10 +27,8 @@ class Function(metaclass=Chainable):
 
     def __str__(self) \
             -> str:
-        annotations = self.annotations
-
         types: List[str] = []
-        for annotation in annotations:
+        for annotation in self.annotations:
             if len(types) > 0:
                 if types[-1] != annotation.param_type:
                     types[-1] = f'{types[-1]}({annotation.param_type})'
@@ -60,13 +58,13 @@ class Function(metaclass=Chainable):
 
     @property
     def signature(self) \
-            -> Tuple[Signature, ...]:
-        return tuple(map(signature, self.__funcs__))
+            -> Iterable[Signature]:
+        return map(signature, self.__funcs__)
 
     @property
     def annotations(self) \
-            -> Tuple[Annotation, ...]:
-        return tuple(map(Annotation, map(signature, self.__funcs__)))
+            -> Iterable[Annotation]:
+        return map(Annotation, map(signature, self.__funcs__))
 
     def map(self, items: Iterable[Any]) \
             -> Generator[Any, None, None]:

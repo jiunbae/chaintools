@@ -50,3 +50,8 @@ def test_chain_map_filter():
     f = F >> F([Test.add(1), Test.to_float]).map >> F(Test.is_even).filter >> F(Test.add(1)).map
     result = f(range(10))
     assert tuple(result) == (3.0, 5.0, 7.0, 9.0, 11.0)
+
+def test_chain_map_filter_nested():
+    f = F >> (F >> Test.add(1) >> Test.to_float).map >> F(Test.is_even).filter >> (F >> Test.add(1)).map
+    result = f(range(10))
+    assert tuple(result) == (3.0, 5.0, 7.0, 9.0, 11.0)

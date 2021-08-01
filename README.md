@@ -55,7 +55,7 @@ assert f() == g() == 3
 
 ## Function map, filter
 
-> `Function.map`과 `Function.filter`를 사용해서 데이터를 처리할 수 있다.
+> `Function.map`과 `Function.filter`를 사용해서 데이터를 처리할 수 있습니다.
 ```python
 def to_float(a):
     return float(a)
@@ -82,7 +82,8 @@ result = f.filter(range(10))
 assert tuple(result) == tuple(filter(is_not_zero, filter(is_even, range(10))))
 ```
 
-> `Function.map`와 `Function.filter`또한 chaining 할 수 있습니다. (단, 입력 형태가 Iterable이기 때문에 함수를 연결할 때 주의해야 합니다.)
+> `Function.map`와 `Function.filter`도 함수이기 때문에 chaining 할 수 있습니다. (단, 형태가 `Iterable -> Iterable`이어야 합니다. 즉 일반적인 `Any -> Any` 형태의 함수와 `Iterable -> Iterable`형태의 함수는 함께 사용할 수 없습니다.)
+
 ```python
 # f = Iterable[Any] -> Iterable[Any] -> Iterable[Any]
 f = F >> F([add(1), to_float]).map >> F(is_even).filter >> F(add(1)).map

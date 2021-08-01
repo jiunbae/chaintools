@@ -30,6 +30,10 @@ class Annotation:
             -> str:
         return self._param_str(self.return_annotation)
 
+    # TODO:
+    #       is_subset, __eq__, __in__
+    #       parameters, return_annotation, split?
+
     @classmethod
     def _param_str(cls, param) \
             -> str:

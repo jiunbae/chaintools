@@ -22,7 +22,7 @@ class Test:
 
 def test_signature():
     f = F >> Test.int_to_str >> Test.str_to_float
-    assert f.signature == (
+    assert tuple(f.signature) == (
         signature(Test.int_to_str),
         signature(Test.str_to_float),
     )
