@@ -3,7 +3,7 @@
 
 ## Function chaining
 
-> `Function` 를 활용해 함수를 연결하는 할 수 있다.
+> `Function` 를 활용해 함수를 연결 할 수 있습니다.
 
 ```python
 from chaintools import Function as F
@@ -13,26 +13,28 @@ def add(tar: int) -> Callable[[int], int]:
         return src + tar
     return _wrapper
 
-# F = int -> int -> int -> int
+# f = int -> int -> int -> int
 f = F >> add(1) >> add(2)
 assert f(3) == 6
 ```
 
-> 함수의 반환 형태가 `Tuple[Tuple[Any, ...], Dict[str, Any]]` 형태일때 다음 함수의 `*args, **kwargs`에 값을 넣어줄 수 있다.
+> 함수의 반환 형태가 `Tuple[Tuple[Any, ...], Dict[str, Any]]` 형태일 때는 특수한 `Argument.TYPE`으로 여겨지며, 다음 함수 인자에 `*args, **kwargs`와 같은 형태로 전달할 수 있습니다.
 
 ```python
+from chaintools import Argument
+
 def return_args_and_kwargs() -> Tuple[Tuple[Any, ...], Dict[str, Any]]:
     return (1, 2), {'c': 1, 'd': 2}
 
 def add_four_variable(a, b, c, d) -> int:
     return a + b + c + d
 
-# F = None -> Tuple[Tuple[Any, ...], Dict[str, Any]] -> int
+# f = None -> Tuple[Tuple[Any, ...], Dict[str, Any]](Argument.TYPE) -> int
 f = F >> return_args_and_kwargs >> add_four_variable
 assert f() == 6
 ```
 
-> 또는 함수 사이에 `F.spread`를 활용해서 `Iterable`형태의 결과값을 다음 함수의 `*args` 형태로 전달할 수 있습니다.
+> 또는 함수 사이에 `Function.spread`를 활용해서 `Iterable`형태의 결과 값을 다음 함수의 `*args` 형태로 전달할 수 있습니다.
 
 ```python
 def return_args() -> Iterable[int]:
@@ -44,9 +46,9 @@ def return_args_as_argument() -> Tuple[Tuple[Any, ...], Dict[str, Any]]:
 def add_two_variable(a, b) -> int:
     return a + b
 
-# F = None -> Iterable[int] -> [int, ...] -> int
+# f = None -> Iterable[int] -> [int, ...] -> int
 f = F >> return_args >> F.spread() >> add_two_variable
-# g = None -> Tuple[Tuple[Any, ...], Dict[str, Any]] -> [int, ...] -> int
+# g = None -> Tuple[Tuple[Any, ...], Dict[str, Any]]([int, ...]) -> int
 g = F >> return_args_as_argument >> add_two_variable
 assert f() == g() == 3
 ```
@@ -61,6 +63,7 @@ def to_float(a):
 def to_str(a):
     return str(a)
 
+# f = Any -> float -> str
 f = F >> to_float >> to_str
 result = f.map(range(10))
 assert tuple(result) == tuple(map(to_str, map(to_float, range(10))))
@@ -73,6 +76,7 @@ def is_even(a):
 def is_not_zero(a):
     return a != 0
 
+# f = Any -> bool -> bool
 f = F >> is_even >> is_not_zero
 result = f.filter(range(10))
 assert tuple(result) == tuple(filter(is_not_zero, filter(is_even, range(10))))
@@ -80,6 +84,7 @@ assert tuple(result) == tuple(filter(is_not_zero, filter(is_even, range(10))))
 
 > `Function.map`와 `Function.filter`또한 chaining 할 수 있습니다. (단, 입력 형태가 Iterable이기 때문에 함수를 연결할 때 주의해야 합니다.)
 ```python
+# f = Iterable[Any] -> Iterable[Any] -> Iterable[Any]
 f = F >> F([add(1), to_float]).map >> F(is_even).filter >> F(add(1)).map
 result = f(range(10))
 assert tuple(result) == (3.0, 5.0, 7.0, 9.0, 11.0)
@@ -100,7 +105,9 @@ def str_to_float(a: str) -> float:
 def float_to_tuple(a: float) -> Tuple[int, int]:
     return (int(a), int(a))
 
+# f = int -> str -> float -> Tuple[int, int]
 f = F >> int_to_str >> str_to_float >> float_to_tuple
+# g = int -> str(float) -> Tuple[int, int]
 g = F >> int_to_str >> float_to_tuple
 assert str(f) == "Function(int -> str -> float -> tuple[int, int])"
 assert str(g) == "Function(int -> str(float) -> tuple[int, int])"
