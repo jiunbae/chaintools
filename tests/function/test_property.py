@@ -19,6 +19,9 @@ class Test:
     def float_to_tuple(a: float) -> Tuple[int, int]:
         return (int(a), int(a))
 
+    @staticmethod
+    def to_float(a: int, b: int) -> float:
+        return float(a + b)
 
 def test_signature():
     f = F >> Test.int_to_str >> Test.str_to_float
@@ -32,5 +35,5 @@ def test_stringify():
     assert str(f) == "Function(int -> str -> float -> tuple[int, int])"
 
 def test_stringify_param_return_not_match():
-    f = F >> Test.int_to_str >> Test.int_to_str >> Test.float_to_tuple
-    assert str(f) == "Function(int -> str(int) -> str(float) -> tuple[int, int])"
+    f = F >> Test.int_to_str >> Test.to_float >> Test.float_to_tuple
+    assert str(f) == "Function(int -> str(int, int) -> float -> tuple[int, int])"

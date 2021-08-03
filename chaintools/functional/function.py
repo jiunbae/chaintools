@@ -28,14 +28,14 @@ class Function(metaclass=Chainable):
     def __str__(self) \
             -> str:
         types: List[str] = []
-        for annotation in self.annotations:
+        for param_annotation, return_annotation in self.annotations:
             if len(types) > 0:
-                if types[-1] != annotation.param_type:
-                    types[-1] = f'{types[-1]}({annotation.param_type})'
+                if types[-1] != str(param_annotation):
+                    types[-1] = f'{types[-1]}({param_annotation!s})'
             else:
-                types.append(annotation.param_type)
+                types.append(str(param_annotation))
 
-            types.append(annotation.return_type)
+            types.append(str(return_annotation))
 
         return f'{self.__class__.__name__}({" -> ".join(types)})'
 
@@ -63,8 +63,8 @@ class Function(metaclass=Chainable):
 
     @property
     def annotations(self) \
-            -> Iterable[Annotation]:
-        return map(Annotation, map(signature, self.__funcs__))
+            -> Iterable[Tuple[Iterable[Annotation], Annotation]]:
+        return map(Annotation.from_function, self.__funcs__)
 
     def map(self, items: Iterable[Any]) \
             -> Generator[Any, None, None]:

@@ -113,3 +113,6 @@ g = F >> int_to_str >> float_to_tuple
 assert str(f) == "Function(int -> str -> float -> tuple[int, int])"
 assert str(g) == "Function(int -> str(float) -> tuple[int, int])"
 ```
+
+- `Function.signature`는 함수의 시그니쳐를 `Iterable[Signature]`형태로 반환합니다.
+- `Function.annotation`은 함수의 annotation을 `chaintools.core.type.annotation.Annotation`형태로 반환합니다.

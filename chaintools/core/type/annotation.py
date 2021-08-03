@@ -4,31 +4,28 @@ import inspect
 
 
 class Annotation:
-    def __init__(self, signature: inspect.Signature):
-        self.signature = signature
-        self.parameters = [
-            param.annotation
-            for param in self.signature.parameters.values()
-        ]
-        self.return_annotation = self.signature.return_annotation
+    """ Annotation is type expression wrapper
+
+    Support to check whether types are equivalent or containment.
+    """
+    TYPE = typing.Union[
+        typing._GenericAlias,
+        typing._SpecialForm,
+        typing.Any,
+        type,
+    ]
+
+    def __init__(self, base: Annotation.TYPE):
+        self.base = base
+        self.__str_cache__ = self._param_str(self.base)
 
     def __repr__(self) \
             -> str:
-        return f"[{self.param_type}] -> {self.return_type}"
+        return self.__str_cache__
         
     def __str__(self) \
             -> str:
-        return f"[{self.param_type}] -> {self.return_type}"
-
-    @property
-    def param_type(self) \
-            -> str:
-        return ', '.join(map(self._param_str, self.parameters))
-
-    @property
-    def return_type(self) \
-            -> str:
-        return self._param_str(self.return_annotation)
+        return self.__str_cache__
 
     # TODO:
     #       is_subset, __eq__, __in__
@@ -47,10 +44,20 @@ class Annotation:
             return param.__name__
         elif param is Ellipsis:
             return '...'
+        elif isinstance(param, typing.Iterable):
+            return f'{", ".join(map(cls._param_str, param))}'
         else:
             return f"{param!s}"
 
     @staticmethod
     def from_function(function: typing.Callable) \
-            -> Annotation:
-        return Annotation(inspect.signature(function))
+            -> typing.Tuple[typing.Iterable[Annotation], Annotation]:
+        """ function annotation
+
+            :return: (parameters, return_annotation)
+        """
+        sign = inspect.signature(function)
+        return (
+            Annotation([param.annotation for param in sign.parameters.values()]),
+            Annotation(sign.return_annotation),
+        )
