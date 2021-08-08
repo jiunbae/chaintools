@@ -13,39 +13,49 @@ class Annotation:
         typing._SpecialForm,
         typing.Any,
         type,
+        str,
     ]
 
     def __init__(self, base: Annotation.TYPE):
         self.base = base
-        self.__str_cache__ = self._param_str(self.base)
 
     def __repr__(self) \
             -> str:
-        return self.__str_cache__
+        return f'{self.__class__.__name__}({self.base!r})'
         
     def __str__(self) \
             -> str:
-        return self.__str_cache__
+        return self.to_str(self.base)
 
-    # TODO:
-    #       is_subset, __eq__, __in__
-    #       parameters, return_annotation, split?
+    def __eq__(self, other: Annotation.TYPE) -> bool:
+        if isinstance(other, Annotation):
+            return self.base == other.base
+        return self.base == other
+
+    def __contains__(self, other: Annotation.TYPE) -> bool:
+        if isinstance(other, Annotation):
+            return self.base == other.base
+        return self.base == other
 
     @classmethod
-    def _param_str(cls, param) \
+    def to_str(cls, param) \
             -> str:
-        if isinstance(param, typing._GenericAlias):
-            generic = cls._param_str(param.__origin__)
-            params = map(cls._param_str, param.__args__)
+        if isinstance(param, str):
+            return f"{param!s}"
+        elif isinstance(param, typing._GenericAlias):
+            generic = cls.to_str(param.__origin__)
+            params = map(cls.to_str, param.__args__)
             return f'{generic}[{", ".join(params)}]'
         elif isinstance(param, typing._SpecialForm):
             return param._name
-        elif isinstance(param, type):
-            return param.__name__
+        elif param is inspect._empty:
+            return 'Any'
         elif param is Ellipsis:
             return '...'
+        elif isinstance(param, type):
+            return param.__name__
         elif isinstance(param, typing.Iterable):
-            return f'{", ".join(map(cls._param_str, param))}'
+            return f'{", ".join(map(cls.to_str, param))}'
         else:
             return f"{param!s}"
 

@@ -2,10 +2,13 @@ from __future__ import annotations
 from typing import Optional, Union, Callable, Iterable, Generator, Any, List, Tuple
 from inspect import Signature, signature
 
-from chaintools.core import (
-    Chainable,
-    Argument,
+from . import (
     Annotation,
+    Argument,
+)
+
+from ..type import (
+    Chainable,
 )
 
 

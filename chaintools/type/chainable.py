@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Callable, Any
+from typing import Callable
+
 
 class Chainable(type):
     def __rshift__(cls, function: Callable)\
@@ -7,8 +8,3 @@ class Chainable(type):
         instance: Chainable = cls()
         instance = instance >> function
         return instance
-
-    def __lshift__(cls, item: Any) \
-            -> Any:
-        result = cls.__call__(item)
-        return result

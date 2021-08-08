@@ -9,20 +9,20 @@ class A:
 
 
 def test_to():
-    f = T.to(A)
+    f = T.to_(A)
     a = f(10)
     assert isinstance(a, A) and a.a == 10
 
 
 def test_to_instantiation_equality():
     target = (1, 2, 3)
-    f = T.to(list)
+    f = T.to_(list)
     g = T.to_list
     assert f(target) == g(target) == list(target)
 
 
 def test_is_type():
-    f = T.is_type(A)
+    f = T.is_(A)
     a = A(10)
     assert f(a)
 
@@ -30,7 +30,7 @@ def test_is_type_equality():
     target_list = [1, 2, 3]
     target_tuple = (1, 2, 3)
 
-    f = T.is_type(list)
+    f = T.is_(list)
     g = T.is_list
     assert f(target_list) == g(target_list)
     assert f(target_tuple) == g(target_tuple)
