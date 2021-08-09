@@ -22,7 +22,7 @@ class Annotation:
     def __repr__(self) \
             -> str:
         return f'{self.__class__.__name__}({self.base!r})'
-        
+
     def __str__(self) \
             -> str:
         return self.to_str(self.base)
@@ -40,24 +40,25 @@ class Annotation:
     @classmethod
     def to_str(cls, param) \
             -> str:
+        """ Convert annotation to string representation.
+        """
         if isinstance(param, str):
             return f"{param!s}"
-        elif isinstance(param, typing._GenericAlias):
+        if isinstance(param, typing._GenericAlias):
             generic = cls.to_str(param.__origin__)
             params = map(cls.to_str, param.__args__)
             return f'{generic}[{", ".join(params)}]'
-        elif isinstance(param, typing._SpecialForm):
+        if isinstance(param, typing._SpecialForm):
             return param._name
-        elif param is inspect._empty:
+        if param is inspect._empty:
             return 'Any'
-        elif param is Ellipsis:
+        if param is Ellipsis:
             return '...'
-        elif isinstance(param, type):
+        if isinstance(param, type):
             return param.__name__
-        elif isinstance(param, typing.Iterable):
+        if isinstance(param, typing.Iterable):
             return f'{", ".join(map(cls.to_str, param))}'
-        else:
-            return f"{param!s}"
+        return f"{param!s}"
 
     @staticmethod
     def from_function(function: typing.Callable) \

@@ -22,15 +22,15 @@ class Argument:
             -> Argument:
         """ Return an Argument from a function result.
 
-        To prevent unintentional generator evaluation, 
+        To prevent unintentional generator evaluation,
         explicitly convert to argument only when the argument is an Argument.TYPE.
 
         :param result: The result of a function evaluation.
-        
+
         :return: The result as an Argument.
         """
 
-        if (isinstance(result, list) or isinstance(result, tuple)) and \
+        if isinstance(result, (list, tuple)) and \
                 len(result) == 2 and (result[-1] is None or isinstance(result[-1], dict)):
             args, kwargs = result
 

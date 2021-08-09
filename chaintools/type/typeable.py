@@ -41,7 +41,7 @@ def to_type_cast(obj: typing.Any, key: str) \
 
 
 class Typeable(type):
-    """ Type checking metaclass
+    """ Typeable class
     """
     GETATTR_MAPPING = {
         'is_': is_type_check,
